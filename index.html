@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Merge Sort Algorithm - Step by Step Visualizer</title>
+    <meta
+      name="description"
+      content="Interactive step-by-step visualization of the Merge Sort algorithm: divide, compare and merge."
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="hero">
+      <div class="wrap">
+        <p class="eyebrow">
+          Analysis of Algorithms &middot; Divide &amp; Conquer
+        </p>
+        <h1>Merge Sort Algorithm</h1>
+        <p class="lead">
+          Watch the array being split down to single elements and then merged
+          back together in sorted order, one step at a time.
+        </p>
+      </div>
+    </header>
+
+    <nav class="topnav" aria-label="Page sections">
+      <div class="wrap">
+        <a href="#visualizer">Visualizer</a>
+        <a href="#how">How it works</a>
+        <a href="#complexity">Time complexity</a>
+      </div>
+    </nav>
+
+    <main class="wrap">
+      <!-- ============================ VISUALIZER ============================ -->
+      <section id="visualizer" class="card">
+        <h2>Step-by-step visualization</h2>
+
+        <form id="inputForm" class="toolbar" autocomplete="off">
+          <label for="arrInput">Array (max 16 numbers)</label>
+          <input
+            id="arrInput"
+            type="text"
+            inputmode="numeric"
+            placeholder="e.g. 8, 3, 2, 9, 7, 1, 5, 4"
+            value="8, 3, 2, 9, 7, 1, 5, 4"
+          />
+          <button type="submit" class="btn primary">Visualize</button>
+          <button type="button" id="btnRandom" class="btn">Random array</button>
+          <label for="modeSel" class="inline">Order</label>
+          <select id="modeSel">
+            <option value="level">Level by level (like the slides)</option>
+            <option value="recursion">Recursion order (like the code)</option>
+          </select>
+        </form>
+        <p id="inputMsg" class="msg" role="alert"></p>
+
+        <ul class="legend" aria-label="Colour legend">
+          <li><i class="sw sw-active"></i>Splitting</li>
+          <li><i class="sw sw-base"></i>Single element (base case)</li>
+          <li><i class="sw sw-cmp"></i>Being compared</li>
+          <li><i class="sw sw-taken"></i>Taken / merged</li>
+          <li><i class="sw sw-used"></i>Already used</li>
+        </ul>
+
+        <div class="controls">
+          <button id="btnReset" class="btn" title="Back to the first step">
+            &#8634; Reset
+          </button>
+          <button id="btnPrev" class="btn" title="Previous step (Left arrow)">
+            &#9664; Prev
+          </button>
+          <button
+            id="btnPlay"
+            class="btn primary"
+            title="Auto play / pause (Space)"
+          >
+            &#9654; Play
+          </button>
+          <button id="btnNext" class="btn" title="Next step (Right arrow)">
+            Next &#9654;
+          </button>
+          <label class="speed" for="speed"
+            >Speed
+            <input id="speed" type="range" min="1" max="10" value="5" />
+          </label>
+          <span class="counter" aria-live="polite"
+            >Step <b id="stepNo">0</b> / <b id="stepTotal">0</b></span
+          >
+          <span class="counter"
+            >Comparisons: <b id="cmpNow">0</b> / <b id="cmpTotal">0</b></span
+          >
+        </div>
+        <div class="progress" aria-hidden="true">
+          <div id="progressBar"></div>
+        </div>
+
+        <div class="stage">
+          <div class="treeWrap">
+            <svg
+              id="tree"
+              role="img"
+              aria-label="Merge sort divide and merge tree"
+            ></svg>
+          </div>
+
+          <aside class="side">
+            <div id="explain" class="explain"></div>
+
+            <div class="panel">
+              <h3>Merge workspace</h3>
+              <div id="workspace" class="workspace"></div>
+            </div>
+
+            <div class="panel">
+              <h3>Pseudocode</h3>
+              <ol id="pseudo" class="pseudo">
+                <li data-l="1"><code>MERGE-SORT(A, p, r)</code></li>
+                <li data-l="2"><code>if p &lt; r then</code></li>
+                <li data-l="3">
+                  <code>&nbsp;&nbsp;q &larr; &lfloor;(p + r) / 2&rfloor;</code>
+                </li>
+                <li data-l="4"><code>&nbsp;&nbsp;MERGE-SORT(A, p, q)</code></li>
+                <li data-l="5">
+                  <code>&nbsp;&nbsp;MERGE-SORT(A, q + 1, r)</code>
+                </li>
+                <li data-l="6"><code>&nbsp;&nbsp;MERGE(A, p, q, r)</code></li>
+                <li data-l="7"><code>end if</code></li>
+              </ol>
+            </div>
+          </aside>
+        </div>
+
+        <details class="logbox" open>
+          <summary>Step log (click any line to jump to that step)</summary>
+          <ol id="log" class="log"></ol>
+        </details>
+      </section>
+
+      <!-- ============================ HOW IT WORKS ============================ -->
+      <section id="how" class="card">
+        <h2>How Merge Sort works</h2>
+        <div class="two-col">
+          <div>
+            <ol class="points">
+              <li>
+                <b>Call</b> <code>MERGE-SORT(A, p, r)</code> with the array A
+                and the indices p (start) and r (end).
+              </li>
+              <li>
+                <b>Check</b> whether the sub-array has more than one element
+                (<code>p &lt; r</code>).
+              </li>
+              <li>
+                <b>Divide:</b> find the middle index
+                <code>q = &lfloor;(p + r) / 2&rfloor;</code>.
+              </li>
+              <li>
+                <b>Conquer left:</b> recursively sort the left half
+                <code>A[p..q]</code>.
+              </li>
+              <li>
+                <b>Conquer right:</b> recursively sort the right half
+                <code>A[q+1..r]</code>.
+              </li>
+              <li>
+                <b>Combine:</b> merge the two sorted halves into one sorted
+                array.
+              </li>
+              <li>
+                <b>Stop</b> the recursion when a sub-array has 0 or 1 element,
+                because it is already sorted.
+              </li>
+            </ol>
+          </div>
+          <div>
+            <h3>How two sorted halves are merged</h3>
+            <p>
+              Keep one pointer at the front of each half. Compare the two front
+              elements, move the <b>smaller</b> one to the output and advance
+              that pointer. When one half runs out, copy whatever is left of the
+              other half.
+            </p>
+            <p>
+              If the two elements are equal, the one from the <b>left</b> half
+              is taken first. This is why Merge Sort is a <b>stable</b> sort.
+            </p>
+            <div class="mini-demo" aria-label="Merge example">
+              <div class="mini-row">
+                <span class="mini-label">Left</span><span class="chip">3</span
+                ><span class="chip">8</span>
+              </div>
+              <div class="mini-row">
+                <span class="mini-label">Right</span><span class="chip">2</span
+                ><span class="chip">9</span>
+              </div>
+              <div class="mini-row">
+                <span class="mini-label">Output</span
+                ><span class="chip taken">2</span
+                ><span class="chip taken">3</span
+                ><span class="chip taken">8</span
+                ><span class="chip taken">9</span>
+              </div>
+              <p class="mini-note">
+                Compare 3 and 2 &rarr; take 2 &middot; compare 3 and 9 &rarr;
+                take 3 &middot; compare 8 and 9 &rarr; take 8 &middot; copy 9.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================ COMPLEXITY ============================ -->
+      <section id="complexity" class="card">
+        <h2>Time complexity</h2>
+        <p>
+          Choose a case to see its time complexity. The same choice exists in
+          the Windows Forms application.
+        </p>
+
+        <div class="tabs" role="tablist" aria-label="Case">
+          <button role="tab" class="tab" data-case="best" aria-selected="false">
+            Best case
+          </button>
+          <button role="tab" class="tab" data-case="avg" aria-selected="true">
+            Average case
+          </button>
+          <button
+            role="tab"
+            class="tab"
+            data-case="worst"
+            aria-selected="false"
+          >
+            Worst case
+          </button>
+        </div>
+        <div id="casePanel" class="case-panel" role="tabpanel"></div>
+
+        <div class="two-col">
+          <div>
+            <h3>Why every case is O(n log n)</h3>
+            <p>The running time follows the recurrence</p>
+            <p class="formula">T(n) = 2&middot;T(n/2) + &Theta;(n)</p>
+            <p>
+              The array is halved at each level, so there are about
+              <b>log<sub>2</sub> n</b> levels. At every level the merges touch
+              all <b>n</b> elements once. That gives
+              <b>n &times; log<sub>2</sub> n</b> work. The input order only
+              changes how many <i>comparisons</i> happen inside a merge, never
+              how many levels there are or how many elements are copied.
+            </p>
+          </div>
+          <div>
+            <h3>Work per level for the current array</h3>
+            <table class="tbl" id="levelTable">
+              <thead>
+                <tr>
+                  <th>Depth</th>
+                  <th>Merges</th>
+                  <th>Elements merged</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+            <p class="tbl-note" id="levelNote"></p>
+          </div>
+        </div>
+
+        <div class="stats" id="stats"></div>
+
+        <div class="keypoints">
+          <h3>Key points</h3>
+          <ul>
+            <li>Follows the <b>Divide and Conquer</b> approach.</li>
+            <li>
+              Time complexity: <b>O(n log n)</b> in the best, average and worst
+              case.
+            </li>
+            <li>
+              Space complexity: <b>O(n)</b>, because the merge step needs a
+              temporary array.
+            </li>
+            <li>A <b>stable</b> sorting algorithm.</li>
+            <li>
+              Works well for large data sets, and the speed does not depend on
+              the input order.
+            </li>
+          </ul>
+        </div>
+      </section>
+    </main>
+
+    <footer class="foot">
+      <div class="wrap">
+        <p>
+          Merge Sort Visualizer &middot; Analysis of Algorithms project &middot;
+          The Shaikh Ayaz University, Shikarpur
+        </p>
+        <!-- Add your team names here, e.g. <p>Made by: Name 1, Name 2, Name 3</p> -->
+      </div>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>
